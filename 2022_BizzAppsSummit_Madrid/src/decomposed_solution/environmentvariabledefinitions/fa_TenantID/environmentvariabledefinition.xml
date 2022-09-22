@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="fa_TenantID">
+  <defaultvalue>test</defaultvalue>
+  <description default="Tenant ID of Azure">
+    <label description="Tenant ID of Azure" languagecode="1033" />
+  </description>
+  <displayname default="Tenant ID">
+    <label description="Tenant ID" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

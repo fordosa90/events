@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CanvasApp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>fa_customerinsightsmanageroles_2ea94</Name>
+  <AppVersion>2022-09-09T08:56:48Z</AppVersion>
+  <Status>Ready</Status>
+  <CreatedByClientVersion>3.22085.14.0</CreatedByClientVersion>
+  <MinClientVersion>3.22085.14.0</MinClientVersion>
+  <Tags>{"primaryDeviceWidth":"640","primaryDeviceHeight":"1136","supportsPortrait":"true","supportsLandscape":"true","primaryFormFactor":"Phone","publisherVersion":"3.22085.14","minimumRequiredApiVersion":"2.2.0","hasComponent":"false","hasUnlockedComponent":"false","isUnifiedRootApp":"false","sienaVersion":"20220909T083347Z-3.22085.14.0"}</Tags>
+  <IsCdsUpgraded>0</IsCdsUpgraded>
+  <GalleryItemId xsi:nil="true"></GalleryItemId>
+  <BackgroundColor>RGBA(0,176,240,1)</BackgroundColor>
+  <DisplayName>Customer Insights - Manage roles</DisplayName>
+  <Description xsi:nil="true"></Description>
+  <CommitMessage xsi:nil="true"></CommitMessage>
+  <Publisher xsi:nil="true"></Publisher>
+  <AuthorizationReferences>[]</AuthorizationReferences>
+  <ConnectionReferences>{"892bcb78-b8cb-4dc8-9e27-060741a79e9b":{"id":"/providers/microsoft.powerapps/apis/shared_logicflows","displayName":"Logic flows","iconUri":"https://connectoricons-prod.azureedge.net/releases/v1.0.1534/1.0.1534.2605/logicflows/icon.png","dataSources":["CustomerInsights-AmendUserRoleAssignment"],"dependencies":[],"dependents":[],"parameterHints":{"workflowName":{"value":"4cbb2df4-d97c-4bdf-ba5b-af60f391f512"},"workflowEntityId":{"value":"9f6ba157-0c30-ed11-9db1-002248812cfb"}},"parameterHintsV2":{"workflowName":{"value":"4cbb2df4-d97c-4bdf-ba5b-af60f391f512"},"workflowEntityId":{"value":"9f6ba157-0c30-ed11-9db1-002248812cfb"}},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{},"apiTier":"Standard","actions":["Run"]},"9612ad5b-b627-4745-af5c-b449fe1a5455":{"id":"/providers/microsoft.powerapps/apis/shared_logicflows","displayName":"Logic flows","iconUri":"https://connectoricons-prod.azureedge.net/releases/v1.0.1534/1.0.1534.2605/logicflows/icon.png","dataSources":["CustomerInsights-GetRoleAssignments"],"dependencies":[],"dependents":[],"parameterHints":{"workflowName":{"value":"f3eef504-9282-41f8-8615-5de67f8f401e"},"workflowEntityId":{"value":"0415da3c-1830-ed11-9db1-002248812cfb"}},"parameterHintsV2":{"workflowName":{"value":"f3eef504-9282-41f8-8615-5de67f8f401e"},"workflowEntityId":{"value":"0415da3c-1830-ed11-9db1-002248812cfb"}},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{},"apiTier":"Standard","actions":["Run"]}}</ConnectionReferences>
+  <DatabaseReferences>{}</DatabaseReferences>
+  <AppComponents>[]</AppComponents>
+  <AppComponentDependencies>[]</AppComponentDependencies>
+  <CanConsumeAppPass>1</CanConsumeAppPass>
+  <CanvasAppType>0</CanvasAppType>
+  <BypassConsent>0</BypassConsent>
+  <AdminControlBypassConsent>0</AdminControlBypassConsent>
+  <EmbeddedApp xsi:nil="true"></EmbeddedApp>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <CdsDependencies>{"cdsdependencies":[]}</CdsDependencies>
+  <IsCustomizable>1</IsCustomizable>
+  <BackgroundImageUri>/CanvasApps/fa_customerinsightsmanageroles_2ea94_BackgroundImageUri</BackgroundImageUri>
+  <DocumentUri>/CanvasApps/fa_customerinsightsmanageroles_2ea94_DocumentUri.msapp</DocumentUri>
+</CanvasApp>

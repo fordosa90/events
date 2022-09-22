@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="fa_ClientID">
+  <defaultvalue>test</defaultvalue>
+  <description default="Client ID of the AAD app">
+    <label description="Client ID of the AAD app" languagecode="1033" />
+  </description>
+  <displayname default="Client ID">
+    <label description="Client ID" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

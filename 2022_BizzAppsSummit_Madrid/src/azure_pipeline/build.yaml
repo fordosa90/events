@@ -1,0 +1,77 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- name: tenantid
+  value: ""
+- name: clientid
+  value: ""
+- name: clientsecret
+  value: ""
+- name: instanceid
+  value: ""
+- name: apikey
+  value: ""
+
+steps:
+- powershell: |
+    $endpoint_token = "https://login.microsoftonline.com/$(variables.tenantid)/oauth2/token"
+
+    $req_token = Invoke-RestMethod -Uri $endpoint_token `
+      -Method 'POST' `
+      -ContentType 'application/x-www-form-urlencoded' `
+      -Body "grant_type=client_credentials&client_id=$(variables.clientid)&client_secret=$(variables.clientsecret)&resource=https://api.ci.ai.microsoft.com"
+    
+    $token = $req_token.access_token
+    Write-Host "##vso[task.setvariable variable=access_token;isOutput=true]$token"
+  displayName: "Get Token"
+  name: get_token
+
+- powershell: |
+    $endpoint_ci = "https://api.ci.ai.dynamics.com/v1"
+    $endpoint_segments = "$endpoint_ci/instances/$(variables.instanceid)/manage/segments?includeHistoricStats=false&historicStatsDays=10&numberOfSegments=41489195"
+
+    $headers = @{
+      'Accept' = 'text/plain'
+      'Authorization' = "Bearer $(access_token)"
+      'Ocp-Apim-Subscription-Key' = "$(variables.apikey)"
+    }
+
+    $req_segments = Invoke-RestMethod -Uri $endpoint_segments -Method 'GET' -Headers $headers
+    Write-Host "##vso[task.setvariable variable=segments;isOutput=true]$req_segments"
+  displayName: "Get Segments"
+  name: get_segments
+
+- powershell: |
+    $env:GIT_REDIRECT_STDERR="2>&1"
+    $env:GIT_AUTHOR_NAME = "Build Agent"
+    $env:GIT_AUTHOR_EMAIL = "build@agent.local"
+    $env:GIT_COMMITTER_NAME = "Build Agent"
+    $env:GIT_COMMITTER_EMAIL = "build@agent.local"
+
+    $branchName = "Build-Agent/$(Get-Date -Format "yyyy.MM.dd_HHmmss")_by_$(Build.RequestedFor)"
+    $branchName = $branchName -replace '\s',''
+    Write-Host "branchName variable value: $branchName"
+
+    git checkout -b $branchName
+
+    $(segments) | Export-Csv -Path "src\Segments\segments.csv"
+    Write-Host "$ git add"
+    git add "src\Segments"
+    Write-Host "$ git commit"
+    git commit -m `"Build Agent: Extrated Segments`"
+
+    Write-Host "$ git stash"
+    git stash
+    Write-Host "$ git pull --rebase"
+    git pull --rebase
+    Write-Host "$ git stash pop"
+    git stash pop
+    
+    Write-Host "$ git push origin $branchName"
+    git push origin $branchName
+  displayName: "Source Segments"
+  name: source_segments

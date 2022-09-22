@@ -1,0 +1,241 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Tenant ID (fa_TenantID)": {
+          "defaultValue": "test",
+          "type": "String",
+          "metadata": {
+            "schemaName": "fa_TenantID",
+            "description": "Tenant ID of Azure"
+          }
+        },
+        "Client ID (fa_ClientID)": {
+          "defaultValue": "test",
+          "type": "String",
+          "metadata": {
+            "schemaName": "fa_ClientID",
+            "description": "Client ID of the AAD app"
+          }
+        },
+        "Client Secret (fa_ClientSecret)": {
+          "defaultValue": "test",
+          "type": "String",
+          "metadata": {
+            "schemaName": "fa_ClientSecret"
+          }
+        },
+        "Api Key (fa_ApiKey)": {
+          "defaultValue": "test",
+          "type": "String",
+          "metadata": {
+            "schemaName": "fa_ApiKey",
+            "description": "Customer Insights API Key"
+          }
+        },
+        "Instance ID (fa_InstanceID)": {
+          "defaultValue": "test",
+          "type": "String",
+          "metadata": {
+            "schemaName": "fa_InstanceID"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "72120588-a59f-4021-ba84-f86008131007"
+          },
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "HTTP_-_Get_Token": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "968198af-7ff5-474e-8df2-7aff7e0dbc1b"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "https://login.microsoftonline.com/@{parameters('Tenant ID (fa_TenantID)')}/oauth2/token",
+            "headers": {
+              "Cache-Control": "no-cache",
+              "Accept": "*/*",
+              "Accept-Encoding": "gzip, deflate, br",
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            "body": "grant_type=client_credentials&client_id=@{parameters('Client ID (fa_ClientID)')}&client_secret=@{parameters('Client Secret (fa_ClientSecret)')}&resource=https://api.ci.ai.microsoft.com"
+          }
+        },
+        "Parse_JSON_-_token_response": {
+          "runAfter": {
+            "HTTP_-_Get_Token": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c1036e1d-d60c-42a5-b09a-b6949e7192ab"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('HTTP_-_Get_Token')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token_type": {
+                  "type": "string"
+                },
+                "expires_in": {
+                  "type": "string"
+                },
+                "ext_expires_in": {
+                  "type": "string"
+                },
+                "expires_on": {
+                  "type": "string"
+                },
+                "not_before": {
+                  "type": "string"
+                },
+                "resource": {
+                  "type": "string"
+                },
+                "access_token": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "HTTP_-_Get_Role_Assignments": {
+          "runAfter": {
+            "Parse_JSON_-_token_response": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "86f8bb09-11ca-434a-b7fd-0f4f05087ec5"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "GET",
+            "uri": "https://api.ci.ai.dynamics.com/v1/instances/@{parameters('Instance ID (fa_InstanceID)')}/rbac/assignments",
+            "headers": {
+              "Accept": "text/plain",
+              "Accept-Encoding": "gzip, deflate, br",
+              "Ocp-Apim-Subscription-Key": "@parameters('Api Key (fa_ApiKey)')",
+              "Authorization": "Bearer @{body('Parse_JSON_-_token_response')?['access_token']}",
+              "Cache-Control": "no-cache"
+            }
+          }
+        },
+        "Parse_JSON_-_assignments": {
+          "runAfter": {
+            "HTTP_-_Get_Role_Assignments": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4946ff5d-755f-4a55-abc4-8e22f1f1fc62"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('HTTP_-_Get_Role_Assignments')",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "principalId": {
+                    "type": "string"
+                  },
+                  "principalType": {
+                    "type": "string"
+                  },
+                  "roles": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "instanceId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "principalId",
+                  "principalType",
+                  "roles",
+                  "instanceId"
+                ]
+              }
+            }
+          }
+        },
+        "Response": {
+          "runAfter": {
+            "Parse_JSON_-_assignments": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b075e4fb-3e61-449f-984e-a08f609c64de"
+          },
+          "type": "Response",
+          "kind": "Http",
+          "inputs": {
+            "statusCode": 200,
+            "body": "@body('Parse_JSON_-_assignments')",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "principalId": {
+                    "type": "string"
+                  },
+                  "principalType": {
+                    "type": "string"
+                  },
+                  "roles": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "instanceId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "principalId",
+                  "principalType",
+                  "roles",
+                  "instanceId"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "outputs": {}
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

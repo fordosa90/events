@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="fa_ApiKey">
+  <defaultvalue>test</defaultvalue>
+  <description default="Customer Insights API Key">
+    <label description="Customer Insights API Key" languagecode="1033" />
+  </description>
+  <displayname default="Api Key">
+    <label description="Api Key" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

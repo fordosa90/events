@@ -1,0 +1,384 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Tenant ID (fa_TenantID)": {
+          "defaultValue": "test",
+          "type": "String",
+          "metadata": {
+            "schemaName": "fa_TenantID",
+            "description": "Tenant ID of Azure"
+          }
+        },
+        "Client ID (fa_ClientID)": {
+          "defaultValue": "test",
+          "type": "String",
+          "metadata": {
+            "schemaName": "fa_ClientID",
+            "description": "Client ID of the AAD app"
+          }
+        },
+        "Client Secret (fa_ClientSecret)": {
+          "defaultValue": "test",
+          "type": "String",
+          "metadata": {
+            "schemaName": "fa_ClientSecret"
+          }
+        },
+        "Api Key (fa_ApiKey)": {
+          "defaultValue": "test",
+          "type": "String",
+          "metadata": {
+            "schemaName": "fa_ApiKey",
+            "description": "Customer Insights API Key"
+          }
+        },
+        "Instance ID (fa_InstanceID)": {
+          "defaultValue": "test",
+          "type": "String",
+          "metadata": {
+            "schemaName": "fa_InstanceID"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "8075386d-eed8-474c-9530-d1b17649b06c"
+          },
+          "type": "Request",
+          "kind": "VirtualAgent",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "HTTP_-_Get_token": {
+          "runAfter": {
+            "Initialize_variable_-_error": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b0fe24d4-8dc5-4a72-a2c6-bec90ca37ea4"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "https://login.microsoftonline.com/@{parameters('Tenant ID (fa_TenantID)')}/oauth2/token",
+            "headers": {
+              "Cache-Control": "no-cache",
+              "Accept": "*/*",
+              "Accept-Encoding": "gzip, deflate, br",
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            "body": "grant_type=client_credentials&client_id=@{parameters('Client ID (fa_ClientID)')}&client_secret=@{parameters('Client Secret (fa_ClientSecret)')}&resource=https://api.ci.ai.microsoft.com"
+          }
+        },
+        "Parse_JSON_-_token_response": {
+          "runAfter": {
+            "HTTP_-_Get_token": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "041b9c81-f255-43fc-9809-b00ad18df379"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('HTTP_-_Get_token')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token_type": {
+                  "type": "string"
+                },
+                "expires_in": {
+                  "type": "string"
+                },
+                "ext_expires_in": {
+                  "type": "string"
+                },
+                "expires_on": {
+                  "type": "string"
+                },
+                "not_before": {
+                  "type": "string"
+                },
+                "resource": {
+                  "type": "string"
+                },
+                "access_token": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "HTTP_-_Get_WorkflowJobs": {
+          "runAfter": {
+            "Parse_JSON_-_token_response": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e4b65009-67bf-4723-802c-37f6fb5d39ea"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "GET",
+            "uri": "https://api.ci.ai.dynamics.com/v1/instances/@{parameters('Instance ID (fa_InstanceID)')}/workflows/adipisicing%20nisi%20velit/history?top=20",
+            "headers": {
+              "Ocp-Apim-Subscription-Key": "@parameters('Api Key (fa_ApiKey)')",
+              "Authorization": "Bearer @{body('Parse_JSON_-_token_response')?['access_token']}",
+              "Cache-Control": "no-cache"
+            }
+          }
+        },
+        "Parse_JSON_-_workflowjobs": {
+          "runAfter": {
+            "HTTP_-_Get_WorkflowJobs": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5b352653-79b0-46aa-91b0-61f4062cae65"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('HTTP_-_Get_WorkflowJobs')",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "taskId": {
+                    "type": "string"
+                  },
+                  "taskStatus": {
+                    "type": "string"
+                  },
+                  "operationType": {
+                    "type": "string"
+                  },
+                  "jobIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "friendlyName": {
+                    "type": "string"
+                  },
+                  "endTimestamp": {
+                    "type": "string"
+                  },
+                  "ciError": {
+                    "type": "object",
+                    "properties": {
+                      "exceptionCulprit": {
+                        "type": "string"
+                      },
+                      "errorCode": {
+                        "type": "string"
+                      },
+                      "resultSeverity": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "params": {
+                        "type": "object",
+                        "properties": {
+                          "Dependencies": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "ciErrors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "exceptionCulprit": {
+                          "type": "string"
+                        },
+                        "errorCode": {
+                          "type": "string"
+                        },
+                        "resultSeverity": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "params": {
+                          "type": "object",
+                          "properties": {
+                            "Dependencies": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "exceptionCulprit",
+                        "errorCode",
+                        "resultSeverity",
+                        "message",
+                        "params"
+                      ]
+                    }
+                  },
+                  "waitingTaskIds": {
+                    "type": "array"
+                  },
+                  "submittedTimestamp": {
+                    "type": "string"
+                  },
+                  "subType": {
+                    "type": "string"
+                  },
+                  "additionalInfo": {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string"
+                      },
+                      "evaluationStatus": {
+                        "type": "object",
+                        "properties": {
+                          "untitledMeasure": {
+                            "type": "object",
+                            "properties": {
+                              "status": {
+                                "type": "string"
+                              },
+                              "measureExecutionStatus": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "taskId",
+                  "taskStatus",
+                  "operationType",
+                  "jobIds",
+                  "endTimestamp",
+                  "ciErrors",
+                  "waitingTaskIds",
+                  "submittedTimestamp"
+                ]
+              }
+            }
+          }
+        },
+        "Initialize_variable_-_error": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "a535dd71-8c93-4d65-9070-cf16d5b8743c"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "error",
+                "type": "boolean",
+                "value": "@false"
+              }
+            ]
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@body('Parse_JSON_-_workflowjobs')",
+          "actions": {
+            "Condition": {
+              "actions": {
+                "Set_variable": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "b155ae67-d580-43fe-8d09-af91a21769db"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "error",
+                    "value": "@true"
+                  }
+                }
+              },
+              "runAfter": {},
+              "expression": {
+                "equals": [
+                  "@items('Apply_to_each')['taskStatus']",
+                  "Failed"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "2c33a323-a1de-46ef-95b7-ceb1e75236cb"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Parse_JSON_-_workflowjobs": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8c67563e-ad5c-4d12-935a-05a63c5cc79e"
+          },
+          "type": "Foreach"
+        },
+        "Return_value(s)_to_Power_Virtual_Agents": {
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "dd14974c-6ad2-4afb-ae64-417a8944e740"
+          },
+          "type": "Response",
+          "kind": "VirtualAgent",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "haserror": "@{string(variables('error'))}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "haserror": {
+                  "title": "hasError",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

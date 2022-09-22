@@ -1,0 +1,185 @@
+{
+  "intents": [
+    {
+      "triggerQueries": [
+        "Customer Insights",
+        "issue",
+        "issues",
+        "errors",
+        "error"
+      ],
+      "dialogId": "new_topic_faa18aa77717498986eb66ae96e26bdf",
+      "isTriggeringEnabled": true,
+      "id": "new_topic_faa18aa77717498986eb66ae96e26bdf",
+      "displayName": "BizApps - Error",
+      "createdTime": "2022-09-14T10:37:13.1485846Z",
+      "updatedTime": "2022-09-14T10:54:02.9822234Z",
+      "createdUserId": "4e3610b7-f417-48a5-86fe-d3679dd80631",
+      "updatedUserId": "4e3610b7-f417-48a5-86fe-d3679dd80631"
+    }
+  ],
+  "dialogs": [
+    {
+      "rootNodeId": "22c3b183-ea36-4135-af3a-1eb9d1bd773c",
+      "messageNodes": [
+        {
+          "botMessageId": "7fb97075-2b51-4d9f-ba23-a3b4b83ad1df",
+          "nodeType": "BotMessageNode",
+          "id": "22c3b183-ea36-4135-af3a-1eb9d1bd773c",
+          "defaultTargetNodeId": "3d2ce7b9-d680-4610-a309-96bf94f37fa0"
+        },
+        {
+          "botMessageId": "36521d71-c288-4d01-bdfb-3716b2bf9182",
+          "nodeType": "BotMessageNode",
+          "id": "385461a9-e9b6-4393-9ce3-65b0a218aedb"
+        },
+        {
+          "botMessageId": "1df3ce6c-75ae-4185-9222-132f705b7f44",
+          "nodeType": "BotMessageNode",
+          "id": "87d2daea-ead7-4492-a562-3de81ddc8637"
+        }
+      ],
+      "actionNodes": [
+        {
+          "contextVariableId": "24af4aee-b685-40ef-bf55-209d78017679",
+          "nodeType": "ActionNode",
+          "outputExpressionVariableIds": [
+            "52a6ec75-2cd7-4009-b744-66247d075be2"
+          ],
+          "id": "3d2ce7b9-d680-4610-a309-96bf94f37fa0",
+          "routes": [
+            {
+              "expression": "@equals(parameters('52a6ec75-2cd7-4009-b744-66247d075be2'), true)",
+              "targetNodeId": "385461a9-e9b6-4393-9ce3-65b0a218aedb"
+            }
+          ],
+          "defaultTargetNodeId": "87d2daea-ead7-4492-a562-3de81ddc8637"
+        }
+      ],
+      "id": "new_topic_faa18aa77717498986eb66ae96e26bdf",
+      "displayName": "Untitled",
+      "createdTime": "2022-09-14T10:37:13.1485846Z",
+      "updatedTime": "2022-09-14T10:54:02.9822234Z",
+      "createdUserId": "4e3610b7-f417-48a5-86fe-d3679dd80631",
+      "updatedUserId": "4e3610b7-f417-48a5-86fe-d3679dd80631"
+    }
+  ],
+  "botMessages": [
+    {
+      "channelContent": {
+        "web": {
+          "contentFormat": "Markdown",
+          "content": "Let me check!"
+        }
+      },
+      "id": "7fb97075-2b51-4d9f-ba23-a3b4b83ad1df",
+      "createdTime": "2022-09-14T10:34:54.386Z",
+      "updatedTime": "2022-09-14T10:34:54.386Z"
+    },
+    {
+      "channelContent": {
+        "web": {
+          "contentFormat": "Markdown",
+          "content": "Yes, unfortunately there seem to be an error. Please take a look in Customer Insights!"
+        }
+      },
+      "id": "36521d71-c288-4d01-bdfb-3716b2bf9182",
+      "createdTime": "2022-09-14T10:35:51.139Z",
+      "updatedTime": "2022-09-14T10:35:51.139Z",
+      "createdUserId": "user-0",
+      "updatedUserId": "user-0"
+    },
+    {
+      "channelContent": {
+        "web": {
+          "contentFormat": "Markdown",
+          "content": "No, I don't see any issues. If you don't trust me, you can also take a look in Customer Insights."
+        }
+      },
+      "id": "1df3ce6c-75ae-4185-9222-132f705b7f44",
+      "createdTime": "2022-09-14T10:36:11.865Z",
+      "updatedTime": "2022-09-14T10:36:11.865Z",
+      "createdUserId": "user-0",
+      "updatedUserId": "user-0"
+    }
+  ],
+  "actionDefinitions": [
+    {
+      "timeoutInSeconds": 60,
+      "retryCount": 1,
+      "method": 2,
+      "headers": {
+        "accept": "application/json"
+      },
+      "bodyContent": "",
+      "actionType": "Flow",
+      "flowMetadata": {
+        "id": "843c82cc-f830-ed11-9db1-002248812cfb",
+        "title": "Customer Insights - Chat with Bot",
+        "description": "",
+        "httpMethod": 2,
+        "outputParameters": [
+          {
+            "name": "hasError",
+            "id": "haserror",
+            "type": "Boolean",
+            "optional": true
+          }
+        ],
+        "outputSchemaType": "Json",
+        "createdTime": "2022-09-10T11:07:50Z",
+        "isEnabled": true,
+        "lastModifiedTime": "2022-09-10T14:55:53Z",
+        "versionNumber": 2830570
+      },
+      "id": "d29f7249-4a6e-49eb-8bac-864199598c35",
+      "displayName": "Customer Insights - Chat with Bot",
+      "description": "",
+      "createdTime": "2022-09-14T10:35:24.176Z",
+      "updatedTime": "2022-09-14T10:35:24.176Z"
+    }
+  ],
+  "contextVariables": [
+    {
+      "customTypeId": "d10fb7b1-8e19-4234-b9eb-c5e208fe672b",
+      "initializerType": "Action",
+      "scope": "Dialog",
+      "greedySlotFillingEnabled": false,
+      "isInput": false,
+      "externalInitializationAllowed": false,
+      "actionId": "d29f7249-4a6e-49eb-8bac-864199598c35",
+      "isGlobal": false,
+      "id": "24af4aee-b685-40ef-bf55-209d78017679",
+      "displayName": "",
+      "createdTime": "2022-09-14T10:37:13.1485846Z",
+      "updatedTime": "2022-09-14T10:54:02.9822234Z",
+      "createdUserId": "4e3610b7-f417-48a5-86fe-d3679dd80631",
+      "updatedUserId": "4e3610b7-f417-48a5-86fe-d3679dd80631"
+    },
+    {
+      "systemType": "Boolean",
+      "initializerType": "Expression",
+      "scope": "Dialog",
+      "greedySlotFillingEnabled": false,
+      "isInput": false,
+      "externalInitializationAllowed": false,
+      "expression": "@parameters('24af4aee-b685-40ef-bf55-209d78017679')['haserror']",
+      "isGlobal": false,
+      "id": "52a6ec75-2cd7-4009-b744-66247d075be2",
+      "displayName": "hasError",
+      "createdTime": "2022-09-14T10:37:13.1485846Z",
+      "updatedTime": "2022-09-14T10:54:02.9822234Z",
+      "createdUserId": "4e3610b7-f417-48a5-86fe-d3679dd80631",
+      "updatedUserId": "4e3610b7-f417-48a5-86fe-d3679dd80631"
+    }
+  ],
+  "jsonTypes": [
+    {
+      "customTypeSchema": "Json",
+      "id": "d10fb7b1-8e19-4234-b9eb-c5e208fe672b",
+      "displayName": "Response Json Type for Flow - Customer Insights - Chat with Bot",
+      "createdTime": "2022-09-14T10:35:24.177Z",
+      "updatedTime": "2022-09-14T10:35:24.177Z"
+    }
+  ]
+}

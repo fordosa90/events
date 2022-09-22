@@ -1,0 +1,139 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Tenant ID (fa_TenantID)": {
+          "type": "String",
+          "metadata": {
+            "schemaName": "fa_TenantID",
+            "description": "Tenant ID of Azure"
+          }
+        },
+        "Client ID (fa_ClientID)": {
+          "type": "String",
+          "metadata": {
+            "schemaName": "fa_ClientID",
+            "description": "Client ID of the AAD app"
+          }
+        },
+        "Client Secret (fa_ClientSecret)": {
+          "type": "String",
+          "metadata": {
+            "schemaName": "fa_ClientSecret"
+          }
+        },
+        "Api Key (fa_ApiKey)": {
+          "type": "String",
+          "metadata": {
+            "schemaName": "fa_ApiKey",
+            "description": "Customer Insights API Key"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "866ba5ad-99ef-4131-8ac0-b60f73930fd9"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "HTTP_-_Get_token": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "910c0665-ab9a-499e-8f0c-807162915de5"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "https://login.microsoftonline.com/@{parameters('Tenant ID (fa_TenantID)')}/oauth2/token",
+            "headers": {
+              "Cache-Control": "no-cache",
+              "Accept": "*/*",
+              "Accept-Encoding": "gzip, deflate, br",
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            "body": "grant_type=client_credentials&client_id=@{parameters('Client ID (fa_ClientID)')}&client_secret=@{parameters('Client Secret (fa_ClientSecret)')}&resource=https://api.ci.ai.microsoft.com"
+          }
+        },
+        "Parse_JSON_-_token_response": {
+          "runAfter": {
+            "HTTP_-_Get_token": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2e7005bb-c916-4003-967d-5cb40824bb2b"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('HTTP_-_Get_token')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token_type": {
+                  "type": "string"
+                },
+                "expires_in": {
+                  "type": "string"
+                },
+                "ext_expires_in": {
+                  "type": "string"
+                },
+                "expires_on": {
+                  "type": "string"
+                },
+                "not_before": {
+                  "type": "string"
+                },
+                "resource": {
+                  "type": "string"
+                },
+                "access_token": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "HTTP_-_Get_instances": {
+          "runAfter": {
+            "Parse_JSON_-_token_response": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ddf4feb0-c65b-4592-b0b5-45ca698bf44f"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "GET",
+            "uri": "https://api.ci.ai.dynamics.com/v1/instances",
+            "headers": {
+              "Ocp-Apim-Subscription-Key": "@parameters('Api Key (fa_ApiKey)')",
+              "Authorization": "Bearer @{body('Parse_JSON_-_token_response')?['access_token']}",
+              "Cache-Control": "no-cache"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}
