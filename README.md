@@ -11,5 +11,5 @@ Code samples and others from public events
 
 | Name | Date | Details |
 |------|------|---------|
-| BizzApps Summit 22 Madrid | 2022.09.09-10 | [Details..](2022_BizzAppsSummit_Madrid/bizzsummit22.md) |
+| BizzApps Summit 22 Madrid | 2022.09.09-10 | [Details..](2022_BizzAppsSummit_Madrid/README.md) |
 | ... | ... | ... |
